@@ -2,6 +2,22 @@
 
 This document summarizes Yoseph Widistika Rangga Prakoso's profile in a question-answer friendly format for retrieval-augmented generation.
 
+## What is Yoseph's current role?
+
+Yoseph is currently a Data Analyst & Scientist at PT Multipolar Technology Tbk. He started this role in May 2026. This role supports his transition into data science by giving him hands-on professional experience in data analytics, data science, and real-world data projects.
+
+## What is Yoseph's current career focus?
+
+Yoseph is currently focused on transitioning into data science. His main priority is to gain hands-on experience as a Data Scientist, especially through practical projects involving data analysis, machine learning, business problem solving, and data-driven decision-making.
+
+## Why did Yoseph move into a Data Analyst & Scientist role?
+
+Yoseph moved into a Data Analyst & Scientist role to strengthen his practical experience in data science after completing his MSc in Data Science. The role allows him to apply his Python, machine learning, SQL, analytics, and business domain knowledge in real-world professional projects.
+
+## What are Yoseph's career aspirations?
+
+Yoseph aspires to grow as a hands-on Data Scientist who can combine technical skills, business understanding, and practical implementation. He is especially interested in applying data science to business and financial services contexts, including analytics, risk, operational improvement, and data-driven decision-making.
+
 ## What is Yoseph's professional background?
 
 Yoseph has five years of experience in the financial industry, primarily at PT Bank Mandiri (Persero) Tbk. His experience includes collateral valuation, credit operations, data validation, dashboard development, operational transformation, KPI analysis, process improvement, and exploratory machine learning projects.

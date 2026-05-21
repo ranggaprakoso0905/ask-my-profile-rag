@@ -21,9 +21,9 @@ certifications, and career background.
 
 
 sample_questions = [
-    "What makes Yoseph suitable for a Data Scientist role?",
+    "What is Yoseph's background?",
     "What projects has Yoseph worked on?",
-    "What is Yoseph's educational background?",
+    "Please summarize Yoseph's professional experience.",
     "Does Yoseph have experience with computer vision?",
 ]
 
@@ -43,15 +43,7 @@ with st.sidebar:
         Yoseph's profile. It retrieves relevant information from a vector database and
         generates answers using a language model.
         """
-    )
-
-
-    st.header("Sample Questions")
-
-    for sample_question in sample_questions:
-        if st.button(sample_question):
-            st.session_state.pending_question = sample_question
-    
+    ) 
 
     st.header("Model Settings")
 
@@ -60,7 +52,9 @@ with st.sidebar:
         [
             "gpt-4o-mini",
             "gpt-4.1-mini",
-            "gpt-4.1"
+            "gpt-4.1",
+            "gpt-5-mini",
+            "gpt-5"
         ],
         index=0
     )
@@ -72,6 +66,16 @@ with st.sidebar:
         st.session_state.messages = []
         st.session_state.pending_question = None
         st.rerun()
+
+# Sample questions section in main area
+st.subheader("Try asking:")
+
+cols = st.columns(2)
+
+for i, sample_question in enumerate(sample_questions):
+    with cols[i % 2]:
+        if st.button(sample_question, key=f"sample_{i}", use_container_width=True):
+            st.session_state.pending_question = sample_question
 
 
 # Display existing chat messages

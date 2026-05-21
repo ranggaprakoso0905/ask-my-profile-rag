@@ -1,5 +1,17 @@
 # Professional Experience
 
+## Data Analyst & Scientist
+
+**PT Multipolar Technology Tbk**  
+Indonesia  
+**May 2026 – Present**
+
+Yoseph recently started a new role as a Data Analyst & Scientist at PT Multipolar Technology Tbk. This role marks an important step in his career transition from banking operations and digital transformation into hands-on data analytics and data science work.
+
+In this role, Yoseph is focused on gaining practical experience in data analysis, machine learning, and data science project delivery. He aims to strengthen his ability to work with real business data, build analytical solutions, and contribute to data-driven decision-making in professional client or enterprise contexts.
+
+This role is especially relevant to Yoseph's long-term career direction because it allows him to apply his MSc Data Science background, Python skills, machine learning knowledge, SQL learning, and prior financial industry experience in real-world data projects.
+
 ## Collateral Valuation Manager
 
 **Company:** PT Bank Mandiri (Persero) Tbk.  

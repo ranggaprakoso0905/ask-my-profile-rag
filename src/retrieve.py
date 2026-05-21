@@ -1,4 +1,8 @@
 import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
 from pathlib import Path
 
 from langchain_huggingface import HuggingFaceEmbeddings

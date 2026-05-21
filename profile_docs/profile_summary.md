@@ -1,9 +1,7 @@
 # Profile Summary
 
-Yoseph Widistika Rangga Prakoso is a Data Scientist based in South Tangerang, Indonesia. He holds an MSc in Data Science from The University of Edinburgh, awarded with Distinction, and has five years of experience in data-driven analytics and digital transformation within the financial industry.
+Yoseph Widistika Rangga Prakoso is a Data Analyst & Scientist at PT Multipolar Technology Tbk, with a Distinction-awarded MSc in Data Science from The University of Edinburgh and five years of prior experience in data-driven analytics and digital transformation within the financial industry.
 
-His background combines financial services domain knowledge, machine learning, data analytics, dashboard development, and digital transformation. He has hands-on experience with Python, machine learning, SQL, Power BI, computer vision pipelines, predictive modelling, and end-to-end data workflows.
+He has experience in Python, machine learning, SQL, Power BI, data analysis, dashboarding, computer vision, and end-to-end data workflows. His background combines technical data science training with practical business experience from banking operations, collateral valuation, operational transformation, and KPI monitoring.
 
-Yoseph's professional experience includes working at PT Bank Mandiri (Persero) Tbk. in Wholesale Credit Operations and the Operations Transformation Task Force. His work involved collateral valuation processes, operational analytics, KPI monitoring, process automation initiatives, and proof-of-concept machine learning projects.
-
-His data science work includes computer vision segmentation, pothole detection augmentation experiments, stock network analysis, and a machine learning feasibility study for ship valuation automation.
+Yoseph is currently focused on transitioning further into data science. His priority is to gain hands-on experience as a Data Scientist by working on real-world data projects, strengthening his practical modelling and analytics skills, and contributing to data-driven business decision-making.
