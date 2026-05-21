@@ -21,8 +21,7 @@ certifications, and career background.
 
 
 sample_questions = [
-    "What experience does Yoseph have in banking?",
-    "What makes Yoseph suitable for a Data Analyst role?",
+    "What makes Yoseph suitable for a Data Scientist role?",
     "What machine learning projects has Yoseph worked on?",
     "Does Yoseph have experience with Power BI?",
     "What is Yoseph's educational background?",
@@ -30,31 +29,37 @@ sample_questions = [
 ]
 
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if "pending_question" not in st.session_state:
+    st.session_state.pending_question = None
+
+# Sidebar for sample questions
 with st.sidebar:
     st.header("About")
     st.write(
         """
-This app retrieves relevant information from Yoseph's profile documents
-and uses an LLM to generate an answer based on the retrieved context.
-"""
+        This app uses Retrieval-Augmented Generation (RAG) to answer questions about
+        Yoseph's profile. It retrieves relevant information from a vector database and
+        generates answers using a language model.
+        """
     )
+
 
     st.header("Sample Questions")
-    selected_question = st.selectbox(
-        "Choose a sample question",
-        [""] + sample_questions,
-    )
 
-    st.header("Settings")
+    for sample_question in sample_questions:
+        if st.button(sample_question):
+            st.session_state.pending_question = sample_question
+    
+    st.header("Options")
     show_context = st.checkbox("Show retrieved context", value=False)
 
     if st.button("Clear conversation"):
         st.session_state.messages = []
+        st.session_state.pending_question = None
         st.rerun()
-
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
 
 
 # Display existing chat messages
@@ -62,14 +67,15 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
 
-
-# If user chooses a sample question, treat it as the next question
+# Always show the chat input
+typed_question = st.chat_input("Ask a question about Yoseph's profile")
 question = None
 
-if selected_question:
-    question = selected_question
-else:
-    question = st.chat_input("Ask a question about Yoseph's profile")
+if st.session_state.pending_question:
+    question = st.session_state.pending_question
+    st.session_state.pending_question = None
+elif typed_question:
+    question = typed_question
 
 
 if question:
