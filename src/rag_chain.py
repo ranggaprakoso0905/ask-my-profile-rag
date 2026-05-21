@@ -48,7 +48,7 @@ def format_chat_history(chat_history: list[dict] | None, max_turns: int = 4):
 def answer_question(
         query: str,
         chat_history: list[dict] | None = None,
-        llm_model: str = "gpt-4o-mini"
+        llm_model: str = "gpt-5-mini"
     ):
     docs = retrieve(query, k=4)
     context = build_context(docs)

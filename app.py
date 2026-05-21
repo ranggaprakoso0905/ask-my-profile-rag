@@ -50,11 +50,10 @@ with st.sidebar:
     selected_llm_model = st.selectbox(
         "LLM Model",
         [
-            "gpt-4o-mini",
-            "gpt-4.1-mini",
-            "gpt-4.1",
             "gpt-5-mini",
             "gpt-5"
+            "gpt-4.1",
+            "gpt-4.1-mini",
         ],
         index=0
     )
