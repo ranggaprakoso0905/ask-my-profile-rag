@@ -27,7 +27,14 @@ def load_vectorstore():
 
 def retrieve(query: str, k: int = 6):
     vectorstore = load_vectorstore()
-    results = vectorstore.similarity_search(query, k=k)
+    
+    retriever = vectorstore.as_retriever(
+        search_type="mmr",
+        search_kwargs={"k": k, "fetch_k": 12}
+    )
+
+    results = retriever.invoke(query)
+
     return results
 
 if __name__ == "__main__":

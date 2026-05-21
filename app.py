@@ -22,8 +22,7 @@ certifications, and career background.
 
 sample_questions = [
     "What makes Yoseph suitable for a Data Scientist role?",
-    "What machine learning projects has Yoseph worked on?",
-    "Does Yoseph have experience with Power BI?",
+    "What projects has Yoseph worked on?",
     "What is Yoseph's educational background?",
     "Does Yoseph have experience with computer vision?",
 ]
