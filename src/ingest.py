@@ -1,15 +1,14 @@
 import os
 from pathlib import Path
 
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 
 from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR, DOCS_DIR
 
-def build_vectorstore():
-
+def load_markdown_documents():
     loader = DirectoryLoader(
         DOCS_DIR,
         glob="**/*.md",
@@ -17,9 +16,33 @@ def build_vectorstore():
         loader_kwargs={"encoding": "utf-8"}
     )
 
-    documents = loader.load()
+    return loader.load()
 
-    print(f"Loaded {len(documents)} documents.")
+def load_pdf_documents():
+    pdf_documents = []
+    pdf_paths = list(Path(DOCS_DIR).glob("**/*.pdf"))
+    
+    for pdf_path in pdf_paths:
+        loader = PyPDFLoader(str(pdf_path))
+        docs = loader.load()
+
+        for doc in docs:
+            doc.metadata["source"] = str(pdf_path)
+
+        pdf_documents.extend(docs)
+
+    return pdf_documents
+
+def build_vectorstore():
+
+    markdown_docs = load_markdown_documents()
+    pdf_docs = load_pdf_documents()
+
+    documents = markdown_docs + pdf_docs
+
+    print(f"Loaded {len(markdown_docs)} markdown documents.")
+    print(f"Loaded {len(pdf_docs)} PDF documents.")
+    print(f"Loaded {len(documents)} total documents.")
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=700,
