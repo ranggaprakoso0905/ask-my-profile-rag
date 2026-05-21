@@ -41,7 +41,10 @@ Do not invent information or make assumptions.
 If the answer is not available in the context, say:
 "I don't have enough information from the provided documents." 
 
-Answer in a concise, professional, recruiter-friendly style.
+Answer in a professional and informative style.
+Use 2 to 4 short paragraphs to answer the question.
+Include specific details from the context to support your answer.
+Do not invent information not supported by the context.
 
 Context:
 {context}
