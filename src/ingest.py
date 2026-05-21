@@ -5,8 +5,9 @@ from langchain_community.document_loaders import DirectoryLoader, TextLoader, Py
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
-from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR, DOCS_DIR
+from src.config import VECTORSTORE_DIR, DOCS_DIR
 
 def load_markdown_documents():
     loader = DirectoryLoader(
@@ -53,8 +54,8 @@ def build_vectorstore():
 
     print(f"Created {len(chunks)} chunks.")
 
-    embedding_model = HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL_NAME
+    embedding_model = OpenAIEmbeddings(
+        model="text-embedding-3-small"
     )
 
     vectorstore = FAISS.from_documents(chunks, embedding_model)
