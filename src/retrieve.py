@@ -23,7 +23,7 @@ def load_vectorstore():
 
     return vectorstore
 
-def retrieve(query: str, k: int = 4):
+def retrieve(query: str, k: int = 6):
     vectorstore = load_vectorstore()
     results = vectorstore.similarity_search(query, k=k)
     return results

@@ -2,6 +2,12 @@
 
 ## Vision for Pollution: Deep Learning to Detect Visual Pollution
 
+Yoseph's MSc dissertation project was titled "Vision for Pollution: Deep Learning to Detect Visual Pollution."
+
+This dissertation is also referred to as his MSc project, master's dissertation, final project, and computer vision dissertation.
+
+The project focused on detecting and quantifying urban visual pollution using deep learning and computer vision. Yoseph built a pixel-level segmentation dataset and evaluated supervised segmentation models such as U-Net, DeepLabV3+, FPN, and SegFormer, as well as open-vocabulary models such as CLIPSeg and OVSeg.
+
 **Type:** MSc Dissertation Project  
 **Institution:** The University of Edinburgh  
 **Period:** June 2025 - August 2025
