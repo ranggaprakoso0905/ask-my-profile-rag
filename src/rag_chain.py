@@ -13,9 +13,6 @@ try:
     if "OPENAI_API_KEY" in st.secrets:
         os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-    if "EMBEDDING_MODEL_NAME" in st.secrets:
-        os.environ["EMBEDDING_MODEL_NAME"] = st.secrets["EMBEDDING_MODEL_NAME"]
-
 except Exception:
     pass
 
