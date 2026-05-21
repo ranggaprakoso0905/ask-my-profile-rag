@@ -1,11 +1,11 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-VECTORSTORE_DIR = "vectorstore/faiss_index"
+from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR
 
 def load_vectorstore():
     embedding_model = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name=EMBEDDING_MODEL_NAME
     )
 
     vectorstore = FAISS.load_local(

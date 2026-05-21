@@ -6,8 +6,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 
-DOCS_DIR = "profile_docs"
-VECTORSTORE_DIR = "vectorstore/faiss_index"
+from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR
 
 def build_vectorstore():
 
@@ -32,7 +31,7 @@ def build_vectorstore():
     print(f"Created {len(chunks)} chunks.")
 
     embedding_model = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name=EMBEDDING_MODEL_NAME
     )
 
     vectorstore = FAISS.from_documents(chunks, embedding_model)
