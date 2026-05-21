@@ -6,7 +6,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR
+from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR, DOCS_DIR
 
 def build_vectorstore():
 
