@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
-from retrieve import retrieve
+from src.retrieve import retrieve
 
 load_dotenv()
 
