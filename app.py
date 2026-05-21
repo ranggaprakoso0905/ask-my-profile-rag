@@ -51,7 +51,7 @@ with st.sidebar:
         "LLM Model",
         [
             "gpt-5-mini",
-            "gpt-5"
+            "gpt-5",
             "gpt-4.1",
             "gpt-4.1-mini",
         ],
@@ -60,11 +60,6 @@ with st.sidebar:
 
     st.header("Options")
     show_context = st.checkbox("Show retrieved context", value=False)
-
-    if st.button("Clear conversation"):
-        st.session_state.messages = []
-        st.session_state.pending_question = None
-        st.rerun()
 
 # Sample questions section in main area
 st.subheader("Try asking:")
@@ -76,6 +71,15 @@ for i, sample_question in enumerate(sample_questions):
         if st.button(sample_question, key=f"sample_{i}", use_container_width=True):
             st.session_state.pending_question = sample_question
 
+# Clear conversation button
+st.write("")
+
+if st.button("Clear conversation", use_container_width=True):
+    st.session_state.messages = []
+    st.session_state.pending_question = None
+    st.rerun()
+
+st.divider()
 
 # Display existing chat messages
 for message in st.session_state.messages:
