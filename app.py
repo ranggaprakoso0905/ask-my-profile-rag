@@ -19,6 +19,7 @@ certifications, and career background.
 """
 )
 
+
 sample_questions = [
     "What experience does Yoseph have in banking?",
     "What makes Yoseph suitable for a Data Analyst role?",
@@ -27,6 +28,7 @@ sample_questions = [
     "What is Yoseph's educational background?",
     "Does Yoseph have experience with computer vision?",
 ]
+
 
 with st.sidebar:
     st.header("About")
@@ -46,46 +48,71 @@ and uses an LLM to generate an answer based on the retrieved context.
     st.header("Settings")
     show_context = st.checkbox("Show retrieved context", value=False)
 
+    if st.button("Clear conversation"):
+        st.session_state.messages = []
+        st.rerun()
 
-if "question_input" not in st.session_state:
-    st.session_state.question_input = ""
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+# Display existing chat messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+
+
+# If user chooses a sample question, treat it as the next question
+question = None
 
 if selected_question:
-    st.session_state.question_input = selected_question
+    question = selected_question
+else:
+    question = st.chat_input("Ask a question about Yoseph's profile")
 
 
-question = st.text_input(
-    "Ask a question",
-    key="question_input",
-    placeholder="Example: What experience does Yoseph have in banking?",
-)
+if question:
+    # Add user message to chat history
+    st.session_state.messages.append(
+        {"role": "user", "content": question}
+    )
 
-ask_button = st.button("Ask", type="primary")
+    # Display user message
+    with st.chat_message("user"):
+        st.write(question)
 
-if ask_button:
-    if not question.strip():
-        st.warning("Please enter a question first.")
-    else:
+    # Generate assistant answer
+    with st.chat_message("assistant"):
         with st.spinner("Retrieving documents and generating answer..."):
             try:
-                result = answer_question(question)
+                result = answer_question(
+                    question,
+                    chat_history=st.session_state.messages,
+                )
 
-                st.subheader("Answer")
                 st.write(result["answer"])
 
-                st.subheader("Sources")
-                if result["sources"]:
-                    for source in result["sources"]:
-                        st.write(f"- `{source}`")
-                else:
-                    st.write("No sources returned.")
+                with st.expander("Sources"):
+                    if result["sources"]:
+                        for source in result["sources"]:
+                            st.write(f"- `{source}`")
+                    else:
+                        st.write("No sources returned.")
 
                 if show_context:
-                    st.subheader("Retrieved Context")
-                    for i, doc in enumerate(result["retrieved_docs"], start=1):
-                        with st.expander(f"Retrieved chunk {i}"):
-                            st.write(f"Source: `{doc.metadata.get('source', 'unknown')}`")
+                    with st.expander("Retrieved context"):
+                        for i, doc in enumerate(result["retrieved_docs"], start=1):
+                            st.markdown(f"### Retrieved chunk {i}")
+                            st.write(
+                                f"Source: `{doc.metadata.get('source', 'unknown')}`"
+                            )
                             st.write(doc.page_content)
+
+                # Add assistant answer to chat history
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": result["answer"]}
+                )
 
             except Exception as e:
                 st.error("An error occurred while generating the answer.")

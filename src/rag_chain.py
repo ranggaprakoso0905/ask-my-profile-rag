@@ -29,14 +29,37 @@ def build_context(docs):
 
     return "\n\n".join(context_parts)
 
-def answer_question(query: str):
+def format_chat_history(chat_history: list[dict] | None, max_turns: int = 4):
+    if not chat_history:
+        return "No previous conversation."
+    
+    recent_history = chat_history[-max_turns * 2:]
+
+    formatted_message = []
+
+    for message in recent_history:
+        role = message.get("role", "unknown")
+        content = message.get("content", "")
+        formatted_message.append(f"{role.title()}: {content}")
+
+    return "\n".join(formatted_message)
+        
+        
+def answer_question(
+        query: str,
+        chat_history: list[dict] | None = None
+    ):
     docs = retrieve(query, k=4)
     context = build_context(docs)
+    history_text = format_chat_history(chat_history)
 
     prompt = f"""
 You are an assistant answering questions about Yoseph Widistika Rangga Prakoso's profile.
 
-Use only the information in the context below.
+Use the previous conversation only to understand follow-up questions.
+Use the retrieved context as the source of factual information.
+Do not make factual claims unless they are supported by the retrieved context.
+
 Do not invent information or make assumptions. 
 If the answer is not available in the context, say:
 "I don't have enough information from the provided documents." 
@@ -46,7 +69,10 @@ Use 2 to 4 short paragraphs to answer the question.
 Include specific details from the context to support your answer.
 Do not invent information not supported by the context.
 
-Context:
+Previous conversation:
+{history_text}
+
+Retrieved context:
 {context}
 
 Question:
