@@ -5,7 +5,7 @@ VECTORSTORE_DIR = "vectorstore/faiss_index"
 
 def load_vectorstore():
     embedding_model = HuggingFaceEmbeddings(
-        model_name="models/all-MiniLM-L6-v2"
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
 
     vectorstore = FAISS.load_local(

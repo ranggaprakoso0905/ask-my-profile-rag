@@ -32,7 +32,7 @@ def build_vectorstore():
     print(f"Created {len(chunks)} chunks.")
 
     embedding_model = HuggingFaceEmbeddings(
-        model_name="models/all-MiniLM-L6-v2"
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
 
     vectorstore = FAISS.from_documents(chunks, embedding_model)
