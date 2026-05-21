@@ -53,6 +53,19 @@ with st.sidebar:
         if st.button(sample_question):
             st.session_state.pending_question = sample_question
     
+
+    st.header("Model Settings")
+
+    selected_llm_model = st.selectbox(
+        "LLM Model",
+        [
+            "gpt-4o-mini",
+            "gpt-4.1-mini",
+            "gpt-4.1"
+        ],
+        index=0
+    )
+
     st.header("Options")
     show_context = st.checkbox("Show retrieved context", value=False)
 
@@ -95,6 +108,7 @@ if question:
                 result = answer_question(
                     question,
                     chat_history=st.session_state.messages,
+                    llm_model=selected_llm_model
                 )
 
                 st.write(result["answer"])
