@@ -3,7 +3,21 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from src.retrieve import retrieve
 
+import os
+
 load_dotenv()
+
+try:
+    import streamlit as st
+
+    if "OPENAI_API_KEY" in st.secrets:
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+
+    if "EMBEDDING_MODEL_NAME" in st.secrets:
+        os.environ["EMBEDDING_MODEL_NAME"] = st.secrets["EMBEDDING_MODEL_NAME"]
+
+except Exception:
+    pass
 
 def build_context(docs):
     context_parts = []

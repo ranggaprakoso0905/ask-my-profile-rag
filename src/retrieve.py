@@ -2,8 +2,12 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 from src.config import EMBEDDING_MODEL_NAME, VECTORSTORE_DIR
+from src.ingest import build_vectorstore
 
 def load_vectorstore():
+    if not Path(VECTORSTORE_DIR).exists():
+        build_vectorstore()
+
     embedding_model = HuggingFaceEmbeddings(
         model_name=EMBEDDING_MODEL_NAME
     )
@@ -11,7 +15,7 @@ def load_vectorstore():
     vectorstore = FAISS.load_local(
         VECTORSTORE_DIR,
         embedding_model,
-        allow_dangerous_deserialization=True
+        allow_dangerous_deserialization=True,
     )
 
     return vectorstore
