@@ -45,19 +45,6 @@ with st.sidebar:
         """
     ) 
 
-    st.header("Model Settings")
-
-    selected_llm_model = st.selectbox(
-        "LLM Model",
-        [
-            "gpt-5-mini",
-            "gpt-5",
-            "gpt-4.1",
-            "gpt-4.1-mini",
-        ],
-        index=0
-    )
-
     st.header("Options")
     show_context = st.checkbox("Show retrieved context", value=False)
 
@@ -109,12 +96,11 @@ if question:
 
     # Generate assistant answer
     with st.chat_message("assistant"):
-        with st.spinner("Retrieving documents and generating answer..."):
+        with st.spinner("Generating answer..."):
             try:
                 result = answer_question(
                     question,
-                    chat_history=st.session_state.messages,
-                    llm_model=selected_llm_model
+                    chat_history=st.session_state.messages
                 )
 
                 st.write(result["answer"])

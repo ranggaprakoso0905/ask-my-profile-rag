@@ -29,3 +29,6 @@ Thumbs.db
 # Logs
 *.log
 usage_log.csv
+
+# Previous versions
+previous_ver/
