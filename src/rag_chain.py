@@ -60,14 +60,26 @@ def generate_follow_up_questions(
 
     Based on the current user question, assistant answer, and retrieved context, suggest 3 useful follow-up questions.
 
-    Rules:
-    - The questions should be short and natural.
+    Strict rules:
+    - Each question must be under 12 words.
     - The questions should help the user explore Yoseph's profile further.
     - Do not ask about information that is not supported by the context.
-    - Do not ask questions that are already answered in the current answer.
     - Focus on asking about Yoseph's skills, experience, projects, or background related to data science.
+    - Do not create speculative links between unrelated topics.
+    - Do not ask questions that assume a relationship unless the relationship is explicitly stated in the context.
+    - Do not combine unrelated areas such as civil engineering and machine learning unless the context clearly connects them.
     - Return only the questions, one per line.
     - Do not use numbering or bullet points.
+
+    Good examples:
+    What projects has Yoseph worked on?
+    What data science skills does Yoseph have?
+    What are Yoseph's current career aspirations?
+
+    Bad examples:
+    How does Yoseph's civil engineering background relate to machine learning?
+    How did his scholarship shape his computer vision work?
+    How does banking directly connect to his computer vision work?
 
     User question:
     {query}
@@ -136,6 +148,7 @@ def answer_question(
 
     Formatting rules:
     - Do not start with a title or Markdown heading.
+    - You can use bold text for emphasis.
     - Use 2 to 4 short paragraphs when useful.
     - Use bullet points only if the user asks for a list or if it improves clarity.
     - Keep the tone professional, informative, and natural.
