@@ -64,6 +64,8 @@ def generate_follow_up_questions(
     - The questions should be short and natural.
     - The questions should help the user explore Yoseph's profile further.
     - Do not ask about information that is not supported by the context.
+    - Do not ask questions that are already answered in the current answer.
+    - Focus on asking about Yoseph's skills, experience, projects, or background related to data science.
     - Return only the questions, one per line.
     - Do not use numbering or bullet points.
 
@@ -82,7 +84,7 @@ def generate_follow_up_questions(
     llm = create_claude_llm(
         model=llm_model,
         temperature=DEFAULT_TEMPERATURE,
-        max_tokens=256
+        max_tokens=128
     )
 
     response = llm.invoke([HumanMessage(content=prompt)])
@@ -114,6 +116,7 @@ def answer_question(
         chat_history: list[dict] | None = None,
         llm_model: str = DEFAULT_LLM_MODEL
     ):
+
     docs = retrieve(query, k=4)
     context = build_context(docs)
     history_text = format_chat_history(chat_history)
@@ -121,18 +124,28 @@ def answer_question(
     prompt = f"""
     You are an assistant answering questions about Yoseph Widistika Rangga Prakoso's profile.
 
-    Use the previous conversation only to understand follow-up questions.
-    Use the retrieved context as the source of factual information.
-    Do not make factual claims unless they are supported by the retrieved context.
+    Your task:
+    Answer the user's question using the retrieved context below.
 
-    Do not invent information or make assumptions. 
-    If the answer is not available in the context, say:
-    "I don't have enough information from the provided documents." 
+    Grounding rules:
+    - Use the retrieved context as the only source of factual information.
+    - Use the previous conversation only to understand follow-up questions.
+    - Do not invent information, infer unsupported facts, or make assumptions.
+    - If the retrieved context does not contain enough information, say exactly:
+      "I don't have enough information from the provided documents."
 
-    Answer in a professional and informative style.
-    Use 2 to 4 short paragraphs to answer the question.
-    Include specific details from the context to support your answer.
-    Do not invent information not supported by the context.
+    Formatting rules:
+    - Do not start with a title or Markdown heading.
+    - Do not use Markdown headings such as #, ##, or ###.
+    - Write in normal paragraph format.
+    - Use 2 to 4 short paragraphs when useful.
+    - Use bullet points only if the user asks for a list or if it improves clarity.
+    - Keep the tone professional, informative, and natural.
+
+    Content rules:
+    - Include specific details from the retrieved context when available.
+    - If the question asks for a summary, synthesize the most relevant points.
+    - If the question is a follow-up, connect it to the previous conversation, but still ground the answer in the retrieved context.
 
     Previous conversation:
     {history_text}
@@ -140,7 +153,7 @@ def answer_question(
     Retrieved context:
     {context}
 
-    Question:
+    User question:
     {query}
 
     Answer:
@@ -164,7 +177,7 @@ def answer_question(
     follow_up_questions = generate_follow_up_questions(
     query=query,
     answer=response.content,
-    context=context
+    context=context[:2000]
 )
 
     return {
