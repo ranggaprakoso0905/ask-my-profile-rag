@@ -12,8 +12,6 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
-# Vector database
-vectorstore/
 
 # Local models
 models/
