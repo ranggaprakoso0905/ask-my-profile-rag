@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from src.retrieve import retrieve
 
@@ -10,16 +10,11 @@ load_dotenv()
 try:
     import streamlit as st
 
-    if "ANTHROPIC_API_KEY" in st.secrets:
-        os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
+    if "OPENAI_API_KEY" in st.secrets:
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 except Exception:
     pass
-
-# Set default settings
-DEFAULT_LLM_MODEL = "claude-sonnet-4-6"
-DEFAULT_TEMPERATURE = 0.0
-DEFAULT_MAX_TOKENS = 1024
 
 def build_context(docs):
     context_parts = []
@@ -48,25 +43,12 @@ def format_chat_history(chat_history: list[dict] | None, max_turns: int = 4):
         formatted_message.append(f"{role.title()}: {content}")
 
     return "\n".join(formatted_message)
-
-def create_claude_llm(
-        model: str = DEFAULT_LLM_MODEL,
-        temperature: float = DEFAULT_TEMPERATURE,
-        max_tokens: int = DEFAULT_MAX_TOKENS
-):
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        raise ValueError("ANTHROPIC_API_KEY is not set in environment variables.")
         
-    return ChatAnthropic(
-        model=model,
-        temperature=temperature,
-        max_tokens=max_tokens
-    )
         
 def answer_question(
         query: str,
         chat_history: list[dict] | None = None,
-        llm_model: str = DEFAULT_LLM_MODEL
+        llm_model: str = "gpt-5-mini"
     ):
     docs = retrieve(query, k=4)
     context = build_context(docs)
@@ -100,10 +82,9 @@ Question:
 Answer:
 """
     
-    llm = create_claude_llm(
+    llm = ChatOpenAI(
         model=llm_model,
-        temperature=DEFAULT_TEMPERATURE,
-        max_tokens=DEFAULT_MAX_TOKENS
+        temperature=0,
     )
 
     response = llm.invoke([HumanMessage(content=prompt)])
