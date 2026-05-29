@@ -1,17 +1,11 @@
 import os
-
-from dotenv import load_dotenv
-load_dotenv()
-
 from pathlib import Path
-
 from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
-
-from src.config import VECTORSTORE_DIR, DOCS_DIR
+from langchain_qdrant import QdrantVectorStore
+from qdrant_client import QdrantClient
+from src.config import DOCS_DIR, QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION_NAME
 
 def load_markdown_documents():
     loader = DirectoryLoader(
@@ -38,7 +32,12 @@ def load_pdf_documents():
 
     return pdf_documents
 
-def build_vectorstore():
+def build_vectorstore(recreate_collection: bool = True):
+
+    if not QDRANT_URL:
+        raise ValueError("QDRANT_URL is not set.")
+    if not QDRANT_API_KEY:
+        raise ValueError("QDRANT_API_KEY is not set.")
 
     markdown_docs = load_markdown_documents()
     pdf_docs = load_pdf_documents()
@@ -46,8 +45,7 @@ def build_vectorstore():
     documents = markdown_docs + pdf_docs
 
     print(f"Loaded {len(markdown_docs)} markdown documents.")
-    print(f"Loaded {len(pdf_docs)} PDF documents.")
-    print(f"Loaded {len(documents)} total documents.")
+    print(f"Loaded {len(pdf_docs)} PDF pages.")
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
@@ -62,12 +60,32 @@ def build_vectorstore():
         model="text-embedding-3-small"
     )
 
-    vectorstore = FAISS.from_documents(chunks, embedding_model)
+    client = QdrantClient(
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY
+    )
 
-    Path(VECTORSTORE_DIR).parent.mkdir(parents=True, exist_ok=True)
-    vectorstore.save_local(VECTORSTORE_DIR)
+    if recreate_collection:
+        existing_collections = [
+            collection.name
+            for collection in client.get_collections().collections
+        ]
 
-    print(f"Vectorstore saved to {VECTORSTORE_DIR}.")
+        if QDRANT_COLLECTION_NAME in existing_collections:
+            print(f"Deleting existing collection: {QDRANT_COLLECTION_NAME}")
+            client.delete_collection(collection_name=QDRANT_COLLECTION_NAME)       
+
+    vectorstore = QdrantVectorStore.from_documents(
+        documents=chunks,
+        embedding=embedding_model,
+        url=QDRANT_URL,
+        api_key=QDRANT_API_KEY,
+        collection_name=QDRANT_COLLECTION_NAME
+    )
+
+    vectorstore.add_documents(chunks)
+
+    print(f"Vectorstore saved to {QDRANT_COLLECTION_NAME}.")
 
 if __name__ == "__main__":
     build_vectorstore()

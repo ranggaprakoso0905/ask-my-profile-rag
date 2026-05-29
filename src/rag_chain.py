@@ -1,26 +1,15 @@
-from dotenv import load_dotenv
+import os
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage
+from src.config import ANTHROPIC_API_KEY
 from src.retrieve import retrieve
-
-import os
-
-load_dotenv()
-
-try:
-    import streamlit as st
-
-    if "ANTHROPIC_API_KEY" in st.secrets:
-        os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
-
-except Exception:
-    pass
 
 # Set default settings
 DEFAULT_LLM_MODEL = "claude-sonnet-4-6"
 DEFAULT_TEMPERATURE = 0.0
 DEFAULT_MAX_TOKENS = 1024
 
+# Function to build context from retrieved documents
 def build_context(docs):
     context_parts = []
 
@@ -34,6 +23,7 @@ def build_context(docs):
 
     return "\n\n".join(context_parts)
 
+# Function to format chat history for the prompt
 def format_chat_history(chat_history: list[dict] | None, max_turns: int = 4):
     if not chat_history:
         return "No previous conversation."
@@ -49,6 +39,22 @@ def format_chat_history(chat_history: list[dict] | None, max_turns: int = 4):
 
     return "\n".join(formatted_message)
 
+# Function to create a Claude LLM instance
+def create_claude_llm(
+        model: str = DEFAULT_LLM_MODEL,
+        temperature: float = DEFAULT_TEMPERATURE,
+        max_tokens: int = DEFAULT_MAX_TOKENS
+):
+    if not ANTHROPIC_API_KEY:
+        raise ValueError("ANTHROPIC_API_KEY is not set in environment variables.")
+        
+    return ChatAnthropic(
+        model=model,
+        temperature=temperature,
+        max_tokens=max_tokens
+    )
+
+# Function to generate follow-up questions
 def generate_follow_up_questions(
         query: str,
         answer: str,
@@ -109,20 +115,7 @@ def generate_follow_up_questions(
 
     return questions[:3]
 
-def create_claude_llm(
-        model: str = DEFAULT_LLM_MODEL,
-        temperature: float = DEFAULT_TEMPERATURE,
-        max_tokens: int = DEFAULT_MAX_TOKENS
-):
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        raise ValueError("ANTHROPIC_API_KEY is not set in environment variables.")
-        
-    return ChatAnthropic(
-        model=model,
-        temperature=temperature,
-        max_tokens=max_tokens
-    )
-        
+# Main function to answer a user question
 def answer_question(
         query: str,
         chat_history: list[dict] | None = None,
