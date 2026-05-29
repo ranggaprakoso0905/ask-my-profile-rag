@@ -1,18 +1,29 @@
 # Ask My Profile RAG
 
-A Streamlit chatbot that answers questions about Yoseph Widistika Rangga Prakoso's profile using Retrieval-Augmented Generation (RAG).
+ProfilePilot is a Streamlit chatbot that answers questions about Yoseph Widistika Rangga Prakoso's profile using Retrieval-Augmented Generation (RAG).
 
-The app retrieves relevant chunks from local Markdown profile documents, stores them in a FAISS vector index, and uses an OpenAI chat model to generate grounded answers with source references.
+The app loads local Markdown and PDF profile documents, chunks them with LangChain, stores embeddings in a Qdrant collection, retrieves relevant context with MMR search, and uses Anthropic Claude to generate grounded answers and suggested follow-up questions.
 
 ## Features
 
-- Chat interface built with Streamlit
-- Retrieval from Markdown profile documents in `profile_docs/`
-- FAISS vector database for local semantic search
-- Hugging Face sentence-transformer embeddings
-- OpenAI-powered answer generation through LangChain
-- Optional display of retrieved context for debugging and transparency
-- Sample questions in the sidebar
+- Streamlit chat interface with sample questions and conversation reset
+- Retrieval from Markdown and PDF documents in `profile_docs/`
+- Qdrant vector database for semantic search
+- OpenAI `text-embedding-3-small` embeddings
+- Anthropic Claude answer generation through LangChain
+- Claude-generated suggested follow-up questions
+- Streamlit secrets and local `.env` configuration support
+
+## Current Stack
+
+- Python
+- Streamlit
+- LangChain
+- Qdrant / `qdrant-client`
+- OpenAI embeddings via `langchain-openai`
+- Anthropic chat models via `langchain-anthropic`
+- `pypdf` for PDF document loading
+- `python-dotenv` for local environment variables
 
 ## Project Structure
 
@@ -20,22 +31,24 @@ The app retrieves relevant chunks from local Markdown profile documents, stores 
 .
 |-- app.py                         # Streamlit app entry point
 |-- requirements.txt               # Python dependencies
-|-- profile_docs/                  # Source Markdown documents for the profile
+|-- profile_docs/                  # Local source documents, ignored by git
 |-- src/
-|   |-- config.py                  # App configuration
-|   |-- ingest.py                  # Builds the FAISS vectorstore
-|   |-- retrieve.py                # Loads/searches the vectorstore
-|   `-- rag_chain.py               # RAG prompt and OpenAI call
-|-- vectorstore/                   # Generated FAISS index, ignored by git
+|   |-- config.py                  # Environment and Streamlit secret loading
+|   |-- ingest.py                  # Loads docs and builds the Qdrant collection
+|   |-- retrieve.py                # Loads Qdrant and retrieves relevant chunks
+|   `-- rag_chain.py               # RAG prompts, Claude calls, and follow-ups
+|-- previous_ver/                  # Older implementation experiments, ignored by git
 |-- .streamlit/config.toml         # Streamlit config
 `-- .devcontainer/devcontainer.json
 ```
 
 ## Requirements
 
-- Python 3.11 recommended
-- OpenAI API key
-- Internet access when installing dependencies and downloading the embedding model
+- Python 3.11+ recommended
+- OpenAI API key for embeddings
+- Anthropic API key for answer generation
+- Qdrant URL and API key
+- Internet access for installing dependencies and calling model/vector APIs
 
 ## Setup
 
@@ -56,23 +69,25 @@ Create a `.env` file in the project root:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+QDRANT_URL=your_qdrant_cluster_url
+QDRANT_API_KEY=your_qdrant_api_key
+QDRANT_COLLECTION_NAME=ask_my_profile
 ```
 
-Optional: override the default embedding model:
+`QDRANT_COLLECTION_NAME` is optional. It defaults to `ask_my_profile`.
 
-```env
-EMBEDDING_MODEL_NAME=sentence-transformers/all-MiniLM-L6-v2
-```
+## Build the Vector Store
 
-## Build the Vectorstore
-
-The app can build the vectorstore automatically the first time it needs retrieval. You can also build it manually:
+Build or refresh the Qdrant collection:
 
 ```powershell
 python -m src.ingest
 ```
 
-This reads Markdown files from `profile_docs/`, splits them into chunks, embeds them, and saves the FAISS index to `vectorstore/faiss_index`.
+This command reads Markdown and PDF files from `profile_docs/`, splits them into chunks, embeds them with OpenAI embeddings, and writes them to the configured Qdrant collection.
+
+By default, `src.ingest.build_vectorstore()` recreates the collection if it already exists.
 
 ## Run the App
 
@@ -88,26 +103,36 @@ http://localhost:8501
 
 ## Updating Profile Content
 
-Edit or add Markdown files under `profile_docs/`, then rebuild the vectorstore:
+Edit or add files under `profile_docs/`, then rebuild the Qdrant collection:
 
 ```powershell
 python -m src.ingest
 ```
 
-If `vectorstore/` already exists, rebuilding refreshes the generated index from the current documents.
+The current loader supports:
+
+- Markdown files: `**/*.md`
+- PDF files: `**/*.pdf`
 
 ## Configuration
 
-The main configuration values are in `src/config.py`:
+The main configuration values live in `src/config.py`:
 
 - `DOCS_DIR`: source document folder, default `profile_docs`
-- `VECTORSTORE_DIR`: FAISS index path, default `vectorstore/faiss_index`
-- `EMBEDDING_MODEL_NAME`: embedding model, default `sentence-transformers/all-MiniLM-L6-v2`
+- `QDRANT_URL`: Qdrant cluster URL
+- `QDRANT_API_KEY`: Qdrant API key
+- `QDRANT_COLLECTION_NAME`: Qdrant collection name, default `ask_my_profile`
+- `OPENAI_API_KEY`: used by `OpenAIEmbeddings`
+- `ANTHROPIC_API_KEY`: used by Claude chat models
 
-The OpenAI chat model is configured in `src/rag_chain.py` and currently uses `gpt-4o-mini` with temperature `0`.
+Model settings are currently defined in code:
+
+- Embeddings: `text-embedding-3-small` in `src/ingest.py` and `src/retrieve.py`
+- Main answer model: `claude-sonnet-4-6` in `src/rag_chain.py`
+- Follow-up model: `claude-haiku-4-5-20251001` in `src/rag_chain.py`
 
 ## Notes
 
-- `.env`, `vectorstore/`, local virtual environments, and local model files are ignored by git.
-- For Streamlit Community Cloud or similar deployments, provide `OPENAI_API_KEY` through Streamlit secrets.
-- Retrieved source files are shown below each answer in the app.
+- `.env`, `profile_docs/`, local virtual environments, local model files, and `previous_ver/` are ignored by git.
+- For Streamlit Community Cloud or similar deployments, provide API keys and Qdrant settings through Streamlit secrets.
+- The app currently retrieves sources internally, but the UI only displays the generated answer and suggested follow-up questions.
