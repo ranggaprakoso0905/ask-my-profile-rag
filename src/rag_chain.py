@@ -136,8 +136,6 @@ def answer_question(
 
     Formatting rules:
     - Do not start with a title or Markdown heading.
-    - Do not use Markdown headings such as #, ##, or ###.
-    - Write in normal paragraph format.
     - Use 2 to 4 short paragraphs when useful.
     - Use bullet points only if the user asks for a list or if it improves clarity.
     - Keep the tone professional, informative, and natural.

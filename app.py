@@ -77,7 +77,7 @@ if st.session_state.suggested_questions:
 if len(st.session_state.messages) > 0:
     st.write("")
 
-    if st.button("Clear conversation", type="primary"):
+    if st.button("Clear conversation", use_container_width=True,type="primary"):
         st.session_state.messages = []
         st.session_state.pending_question = None
         st.session_state.suggested_questions = []
