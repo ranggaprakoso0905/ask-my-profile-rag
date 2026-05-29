@@ -12,12 +12,12 @@ if "suggested_questions" not in st.session_state:
 
 
 st.set_page_config(
-    page_title="Ask My Profile",
+    page_title="ProfilePilot",
     page_icon="💬",
     layout="centered",
 )
 
-st.title("Ask My Profile")
+st.title("ProfilePilot")
 
 st.write(
     """
