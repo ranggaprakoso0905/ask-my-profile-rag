@@ -45,8 +45,8 @@ with st.sidebar:
         """
     ) 
 
-    st.header("Options")
-    show_context = st.checkbox("Show retrieved context", value=False)
+    # st.header("Options")
+    # show_context = st.checkbox("Show retrieved context", value=False)
 
 # Sample questions section in main area
 st.subheader("Try asking:")
@@ -105,21 +105,21 @@ if question:
 
                 st.write(result["answer"])
 
-                with st.expander("Sources"):
-                    if result["sources"]:
-                        for source in result["sources"]:
-                            st.write(f"- `{source}`")
-                    else:
-                        st.write("No sources returned.")
+                # with st.expander("Sources"):
+                #     if result["sources"]:
+                #         for source in result["sources"]:
+                #             st.write(f"- `{source}`")
+                #     else:
+                #         st.write("No sources returned.")
 
-                if show_context:
-                    with st.expander("Retrieved context"):
-                        for i, doc in enumerate(result["retrieved_docs"], start=1):
-                            st.markdown(f"### Retrieved chunk {i}")
-                            st.write(
-                                f"Source: `{doc.metadata.get('source', 'unknown')}`"
-                            )
-                            st.write(doc.page_content)
+                # if show_context:
+                #     with st.expander("Retrieved context"):
+                #         for i, doc in enumerate(result["retrieved_docs"], start=1):
+                #             st.markdown(f"### Retrieved chunk {i}")
+                #             st.write(
+                #                 f"Source: `{doc.metadata.get('source', 'unknown')}`"
+                #             )
+                #             st.write(doc.page_content)
 
                 # Add assistant answer to chat history
                 st.session_state.messages.append(
