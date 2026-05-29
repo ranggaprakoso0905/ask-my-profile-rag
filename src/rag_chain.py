@@ -53,7 +53,7 @@ def generate_follow_up_questions(
         query: str,
         answer: str,
         context: str,
-        llm_model: str = DEFAULT_LLM_MODEL,
+        llm_model: str = "claude-haiku-4-5-20251001",
 ):
     prompt = f"""
     You are helping generate follow-up questions for a RAG chatbot about Yoseph Widistika Rangga Prakoso's profile.
@@ -164,8 +164,7 @@ def answer_question(
     follow_up_questions = generate_follow_up_questions(
     query=query,
     answer=response.content,
-    context=context,
-    llm_model=llm_model,
+    context=context
 )
 
     return {
