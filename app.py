@@ -10,7 +10,6 @@ st.set_page_config(
 )
 
 st.title("Ask My Profile")
-st.caption("A RAG-powered chatbot for answering questions about Yoseph's profile.")
 
 st.write(
     """
@@ -49,22 +48,17 @@ with st.sidebar:
     # show_context = st.checkbox("Show retrieved context", value=False)
 
 # Sample questions section in main area
-st.subheader("Try asking:")
+if len(st.session_state.messages) == 0:
+    st.subheader("Try asking:")
 
-cols = st.columns(2)
+    cols = st.columns(2)
 
-for i, sample_question in enumerate(sample_questions):
-    with cols[i % 2]:
-        if st.button(sample_question, key=f"sample_{i}", use_container_width=True):
-            st.session_state.pending_question = sample_question
+    for i, sample_question in enumerate(sample_questions):
+        with cols[i % 2]:
+            if st.button(sample_question, key=f"sample_{i}", use_container_width=True):
+                st.session_state.pending_question = sample_question
 
-# Clear conversation button
-st.write("")
-
-if st.button("Clear conversation", use_container_width=True):
-    st.session_state.messages = []
-    st.session_state.pending_question = None
-    st.rerun()
+    st.write("")
 
 st.divider()
 
@@ -72,6 +66,13 @@ st.divider()
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
+
+# Clear conversation button
+if len(st.session_state.messages) > 0:
+    if st.button("Clear conversation", use_container_width=True):
+        st.session_state.messages = []
+        st.session_state.pending_question = None
+        st.rerun()
 
 # Always show the chat input
 typed_question = st.chat_input("Ask a question about Yoseph's profile")
