@@ -2,6 +2,14 @@ import streamlit as st
 
 from src.rag_chain import answer_question
 
+# Session state initialization
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "pending_question" not in st.session_state:
+    st.session_state.pending_question = None
+if "suggested_questions" not in st.session_state:
+    st.session_state.suggested_questions = []
+
 
 st.set_page_config(
     page_title="Ask My Profile",
@@ -24,13 +32,6 @@ sample_questions = [
     "Please summarize Yoseph's professional experience.",
     "Does Yoseph have experience with computer vision?",
 ]
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if "pending_question" not in st.session_state:
-    st.session_state.pending_question = None
-
 
 with st.sidebar:
     st.header("About")
@@ -57,12 +58,10 @@ if len(st.session_state.messages) == 0:
 
     st.divider()
 
-
 # Display existing chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
-
 
 # Show clear button near the bottom after conversation starts
 if len(st.session_state.messages) > 0:
@@ -71,8 +70,18 @@ if len(st.session_state.messages) > 0:
     if st.button("Clear conversation", use_container_width=True):
         st.session_state.messages = []
         st.session_state.pending_question = None
+        st.session_state.suggested_questions = []
         st.rerun()
 
+# Display suggested follow-up questions if available
+if st.session_state.suggested_questions:
+    st.write("Suggested follow-up questions:")
+
+    for i, follow_up in enumerate(st.session_state.suggested_questions):
+        if st.button(follow_up, key=f"follow_up_{i}", use_container_width=True):
+            st.session_state.pending_question = follow_up
+            st.session_state.suggested_questions = []
+            st.rerun()
 
 # Always show chat input
 typed_question = st.chat_input("Ask a question about Yoseph's profile")
@@ -84,7 +93,6 @@ if st.session_state.pending_question:
     st.session_state.pending_question = None
 elif typed_question:
     question = typed_question
-
 
 if question:
     # Add user message to chat history
@@ -109,6 +117,9 @@ if question:
                 st.session_state.messages.append(
                     {"role": "assistant", "content": result["answer"]}
                 )
+
+                # Update suggested questions
+                st.session_state.suggested_questions = result.get("follow_up_questions", [])
 
                 # Rerun so the clear button and updated chat state render correctly
                 st.rerun()
